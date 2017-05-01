@@ -1,0 +1,185 @@
+<!doctype html>
+<html class="no-js" lang="en-EN" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="utf-8">
+    <title>First try with concurrency in Go | blog</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="" />
+
+    
+<meta property="og:locale" content="en-EN">
+<meta property="og:title" content="First try with concurrency in Go" />
+<meta property="og:description" content="" />
+<meta property="og:site_name" content="blog" />
+<meta property="og:url" content="http://localhost:1313/2016/05/16/first-try-with-concurrency-in-go/" />
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:section" content="post" />
+<meta property="article:published_time" content="2016-05-16" />
+<meta property="article:modified_time" content="2016-05-16" />
+
+    
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="First try with concurrency in Go" />
+<meta name="twitter:description" content="" />
+<meta name="twitter:url" content="http://localhost:1313/2016/05/16/first-try-with-concurrency-in-go/" />
+<meta name="twitter:image:src" content="http://localhost:1313/media/twitter-card.jpg">
+<meta name="twitter:domain" content="http://localhost:1313">
+<meta name="twitter:site" content="@https://twitter.com/alebaffa" />
+<meta name="twitter:creator" content="@https://twitter.com/alebaffa" />
+
+    <base href="http://localhost:1313">
+    <meta name="generator" content="Hugo 0.20-DEV" />
+    <link rel="canonical" href="http://localhost:1313/2016/05/16/first-try-with-concurrency-in-go/">
+    
+    <link rel="stylesheet" href="/css/style.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#636363">
+<meta name="apple-mobile-web-app-title" content="blog">
+<meta name="application-name" content="blog">
+<meta name="theme-color" content="#333333">
+
+</head>
+
+
+<body class="template template--post">
+    <section class="header-wrapper">
+        <header class="headline" role="banner">
+    
+        <a class="headline__title" href="http://localhost:1313">alebaffa&#39;s blog</a>
+    
+</header>
+
+        <nav class="menu" role="navigation" id="main-menu">
+    <input type="checkbox" id="menu">
+    <label for="menu" onclick>Menu</label>
+    <ul class="menu__items">
+        
+        
+        <li><a href="/project/">Projects</a></li>
+        
+        <li><a href="/page/about/">About me</a></li>
+        
+        
+        
+        <li class="twitter">
+            <a href="https://twitter.com/https://twitter.com/alebaffa" title="Follow me">Twitter</a>
+        </li>
+        
+        
+        <li class="github">
+            <a href="https://github.com/https://github.com/alebaffa" title="Fork me">GitHub</a>
+        </li>
+        
+        
+        <li class="linkedin">
+            <a href="https://fr.linkedin.com/in/https://linkedin.com/in/alessandrobaffa/" title="About me">LinkedIn</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    </section>
+    <main class="content" role="main" id="main-content" itemscope itemtype="http://schema.org/Article">
+        <article class="post">
+            <header>
+                <h1 class="post__title" itemprop="name">First try with concurrency in Go</h1>
+            </header>
+            <section class="post__content" itemprop="articleBody">
+                <p>It&rsquo;s been a while I&rsquo;m practicing with Go, but I had still never tried its concurrency features so far. My bad.</p>
+
+<p>Fortunately <a href="http://exercism.io">exercism.io</a> has just introduced me to this topic with the exercise <a href="http://exercism.io/exercises/go/parallel-letter-frequency/readme">&ldquo;Parallel Letter Frequency&rdquo; exercise&rdquo;</a>.</p>
+
+<p>The core of my solution is here (I let you read the comments).</p>
+
+<p>Basically the exercise asks you to count the frequency of the letters in 3 different strings. They provide you with already a function that counts the frequency, but you are asked to call that function with 3 calls in parallel (one call for each string) and to collect the result (the total frequencies from all the 3 strings).</p>
+
+<pre><code class="language-go">func Frequency(s string) map[rune]int {
+  //DO SOMETHING
+}
+func ConcurrentFrequency(words []string) map[rune]int {
+  // (buffered)channel if type map[run]int with capacity of the lenght of the input (3)
+    channel := make(chan map[rune]int, len(words))
+
+    for _, value := range words {
+        // anonymous function that calls Frequency() 3 times in parallel
+        // and puts the three different results in the channel of capacity 3
+        go func(v string){
+            channel &lt;- Frequency(v)
+        }(value)
+    }
+
+  // Now use the values inside the channel.
+  frequency := map[rune]int
+    // loops 3 times because channel of size 3
+    for range words {
+        for key, value := range &lt;-channel {
+            frequency[key] += value
+        }
+    }
+  return frequency
+}
+</code></pre>
+
+<p>In this solution I am basically looping over the array of strings in input and call the Frequency() function on every iteration. The interesting thing is here:</p>
+
+<pre><code class="language-go">go func(v string){
+  channel &lt;- Frequency(v)
+}(value)
+</code></pre>
+
+<p>Here I&rsquo;m starting a <strong>goroutine</strong> on an <strong>anonymous function</strong> (the <em>go</em> prefix before <em>func</em>) inside of which I call Frequency(). The Frequency function sends its returned value in a <strong>channel</strong> (of the same type returned from the function). The channel is the way goroutines communicates with each other and so it&rsquo;s also the way to send values back.</p>
+
+<p>Once the channel contains the returned values, you can loop over the channel itself (not sure here if it&rsquo;s because it&rsquo;s a <em>buffered channel</em> and so with a specified capacity or I can do this every time, I still have to understand this).
+The channel is of type <em>map[rune]int</em> and so I can fetch <key, value> from it, like so:</p>
+
+<pre><code class="language-go">for range words {
+  for key, value := range &lt;-channel {
+    frequency[key] += value
+  }
+}
+</code></pre>
+
+<p>Working with channels is very simple and powerful. There are plenty of things that I still have to learn, but this was a good start. <strong>Thanks Exercism.io</strong>!</p>
+
+            </section>
+            <footer class="post__meta">
+                <ul class="post__meta__infos">
+    
+    <li class="post__meta__date"><time datetime="2016-05-16" itemprop="datePublished">16 May 2016</time></li>
+</ul>
+
+<ul class="post__meta__taxonomies">
+    
+    <li class="tags"><a href="http://localhost:1313tags/golang">Golang </a></li>
+    
+    
+    <li class="categories"><a href="http://localhost:1313categories/golang">golang </a></li>
+    
+</ul>
+<meta itemprop="url" content="http://localhost:1313/2016/05/16/first-try-with-concurrency-in-go/">
+<meta itemprop="wordCount" content="410" />
+<meta itemprop="timeRequired" content="2 Min" />
+
+            </footer>
+        </article>
+    </main>
+    <footer class="legal" role="contentinfo">
+    <p>Performed by <a href="//gohugo.io" title="Hugo :: A fast and modern static website engine">Hugo</a> with the <a href="//github.com/the2ne/hugo-frais" title="Theme by Olivier Fredon">Hugo Frais</a> theme.</p>
+</footer>
+
+    
+
+
+</body>
+</html>

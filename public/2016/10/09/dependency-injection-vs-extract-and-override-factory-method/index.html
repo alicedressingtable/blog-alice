@@ -1,0 +1,201 @@
+<!doctype html>
+<html class="no-js" lang="en-EN" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="utf-8">
+    <title>Dependency Injection VS Extract and Override Factory Method | blog</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Two ways of solving the Racing Car kata - Text converter" />
+
+    
+<meta property="og:locale" content="en-EN">
+<meta property="og:title" content="Dependency Injection VS Extract and Override Factory Method" />
+<meta property="og:description" content="Two ways of solving the Racing Car kata - Text converter" />
+<meta property="og:site_name" content="blog" />
+<meta property="og:url" content="http://localhost:1313/2016/10/09/dependency-injection-vs-extract-and-override-factory-method/" />
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:section" content="post" />
+<meta property="article:published_time" content="2016-10-09" />
+<meta property="article:modified_time" content="2016-10-09" />
+
+    
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Dependency Injection VS Extract and Override Factory Method" />
+<meta name="twitter:description" content="Two ways of solving the Racing Car kata - Text converter" />
+<meta name="twitter:url" content="http://localhost:1313/2016/10/09/dependency-injection-vs-extract-and-override-factory-method/" />
+<meta name="twitter:image:src" content="http://localhost:1313/media/twitter-card.jpg">
+<meta name="twitter:domain" content="http://localhost:1313">
+<meta name="twitter:site" content="@https://twitter.com/alebaffa" />
+<meta name="twitter:creator" content="@https://twitter.com/alebaffa" />
+
+    <base href="http://localhost:1313">
+    <meta name="generator" content="Hugo 0.20-DEV" />
+    <link rel="canonical" href="http://localhost:1313/2016/10/09/dependency-injection-vs-extract-and-override-factory-method/">
+    
+    <link rel="stylesheet" href="/css/style.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#636363">
+<meta name="apple-mobile-web-app-title" content="blog">
+<meta name="application-name" content="blog">
+<meta name="theme-color" content="#333333">
+
+</head>
+
+
+<body class="template template--post">
+    <section class="header-wrapper">
+        <header class="headline" role="banner">
+    
+        <a class="headline__title" href="http://localhost:1313">alebaffa&#39;s blog</a>
+    
+</header>
+
+        <nav class="menu" role="navigation" id="main-menu">
+    <input type="checkbox" id="menu">
+    <label for="menu" onclick>Menu</label>
+    <ul class="menu__items">
+        
+        
+        <li><a href="/project/">Projects</a></li>
+        
+        <li><a href="/page/about/">About me</a></li>
+        
+        
+        
+        <li class="twitter">
+            <a href="https://twitter.com/https://twitter.com/alebaffa" title="Follow me">Twitter</a>
+        </li>
+        
+        
+        <li class="github">
+            <a href="https://github.com/https://github.com/alebaffa" title="Fork me">GitHub</a>
+        </li>
+        
+        
+        <li class="linkedin">
+            <a href="https://fr.linkedin.com/in/https://linkedin.com/in/alessandrobaffa/" title="About me">LinkedIn</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    </section>
+    <main class="content" role="main" id="main-content" itemscope itemtype="http://schema.org/Article">
+        <article class="post">
+            <header>
+                <h1 class="post__title" itemprop="name">Dependency Injection VS Extract and Override Factory Method</h1>
+            </header>
+            <section class="post__content" itemprop="articleBody">
+                
+
+<p>The TextConverter exercise (in the <em>Racing</em> <em>Car</em> <em>kata</em> suite) is a very interesting exercise for refactoring legacy code. As I am reading <em>Working Effectively with Legacy Code</em> I found two ways of solving it.</p>
+
+<p>Refactoring can only be done safely with unit tests and so I did, rigourously in TDD. Though, in this blog post I am not going to show you all the testing process, but only the two ways of decoupling the dependency.</p>
+
+<h2 id="the-problem">The problem</h2>
+
+<p>The code comes with a classic dependency issue: a method that <em>secretly</em> (from the point of view of the client) reads from an external file that is created using the filename passed in the constructor.
+So, no way for the client to know about this file before or to avoid its usage. Here the original code:</p>
+
+<script type="text/javascript" src="http://gist.github.com/f1f7e91dba6c6252d1237381da856645.js"></script>
+
+
+<p>As you can see, the filename &ldquo;<em>fullFilenameWithPath</em>&rdquo; is passed in the constructor and then it&rsquo;s used internally by <em>FileReader</em>. This creates an annoying hidden dependency that prevents the testing of the method <em>convertToHtml()</em>. If you try to call the method <em>convertToHtml()</em> from your tests you will get a &ldquo;<em>File Not Found Exception</em>&rdquo;.</p>
+
+<p>Let&rsquo;s leave aside that ugly mix of levels of abstractions in this method (<em>FileReader</em>, <em>BufferedReader</em>, <em>&lt; br /&gt;</em>, static call to <em>escapeHtml()</em> all together .. <em>blah</em>). I found that this will be fixed almost <em>automagically</em> once you figure out how to extract that dependency from there.</p>
+
+<p>So, how to extract that dependency so that we can test it?</p>
+
+<h2 id="technique-1-dependency-injection">Technique 1: Dependency Injection</h2>
+
+<blockquote>
+<p>An injection is the passing of a dependency to a dependent object (a client) that would use it.</p>
+</blockquote>
+
+<p>In this case the dependency is <em>FileReader</em> and the dependent object is our <em>HtmlTextConverter</em> class.</p>
+
+<p>I want to pass the dependency from the constructor, but we can&rsquo;t change the existing one. In <em>Working Effectively with Legacy Code</em> this is called <em>Preserving Signature</em>, but more easily we can&rsquo;t change an API that is used by the clients.</p>
+
+<p>So, I can refactor this class in 3 steps:</p>
+
+<ol>
+<li>I extract the <em>new FileReader</em> from the method so that now it is created by a ReaderFactory (I am using the <a href="https://sourcemaking.com/design_patterns/factory_method">Factory Design Pattern</a> here, so that I can create a FileReader, or more in general a Reader, with a method <em>createFactory()</em>)</li>
+<li>I create a new constructor that takes a <em>ReaderFactory</em> interface as input</li>
+<li>I make the old constructor to call the new one passing the implementation of <em>ReaderFactory</em> that does the same job of <em>new FileReader()</em>.</li>
+</ol>
+
+<p>The point 3 is called <em>Parametrize Constructor</em> in <em>Working Effectively With Legacy Code</em> and this is the result:</p>
+
+<script type="text/javascript" src="http://gist.github.com/b4e9323e3b692cb6de63efa1c08fa41d.js"></script>
+
+
+<p>The fact that I extracted the <em>FileReader</em> from the method allowed me also to better define how I wanted to use it, so to get rid of <em>BufferedReader</em>, now handled in HtmlFormatter class. This allowed me also to remove the global variable fullFilenameWithPath from HtmlTextConverter.
+ A simple refactoring that made me, at the same time, decouple the dependency and make the code cleaner by removing that ugly mix of levels of abstractions.</p>
+
+<p>With this implementation I can now test the method just by creating a fake implementation of ReaderFactory in order to read from a String instead of a file:</p>
+
+<script type="text/javascript" src="http://gist.github.com/35267e8d83a380d4ec071faf95cc356c.js"></script>
+
+
+<h2 id="technique-2-extract-and-override-factory-method">Technique 2: Extract and Override Factory Method</h2>
+
+<p>In this technique you extract all the work involved in the creation of <em>FileReader</em> in the constructor into another factory method. Then, you create a testing subclass and override the method. This is the result:</p>
+
+<script type="text/javascript" src="http://gist.github.com/f1e01dcfa82737091ff430fb40932d51.js"></script>
+
+
+<p>I have extracted the <em>new FileReader()</em> into another method called <em>getReader()</em>, so now I can override it in a subclass called <em>FakeHtmlTextConverter</em> as follows:</p>
+
+<script type="text/javascript" src="http://gist.github.com/b823ce0137a2b01b60873741fe19b68c.js"></script>
+
+
+<p>This technique allows me to not change the constructor, but instead using a fake implementation in the tests, like so:</p>
+
+<script type="text/javascript" src="http://gist.github.com/73fa748312c3cda72fad659d698d1203.js"></script>
+
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p><em>Working Effectively With Legacy Code</em> is an illuminating book and i strongly recommend it to read. It&rsquo;s pretty dense with content, but reading it along with small exercise like this one it&rsquo;s a great way to absorb it faster and make it yours.</p>
+
+<p>This exercise is interesting and puts you a bit uncomfortable since the refactoring is becomes pretty big very quickly and it&rsquo;s difficult to do it in small steps. You stay in the red zone (<em>test don&rsquo;t pass</em>) for long, at least the first time you do it and mostly if you&rsquo;re not familiar with design patterns or any refactoring strategy in particular.</p>
+
+<p>Regarding the techniques, the 2. is strongly linked to the programming language used. You can&rsquo;t use it in C/C++. The 1. is more clean. Both are two great ones.</p>
+
+            </section>
+            <footer class="post__meta">
+                <ul class="post__meta__infos">
+    
+    <li class="post__meta__date"><time datetime="2016-10-09" itemprop="datePublished">09 October 2016</time></li>
+</ul>
+
+<ul class="post__meta__taxonomies">
+    
+    
+</ul>
+<meta itemprop="url" content="http://localhost:1313/2016/10/09/dependency-injection-vs-extract-and-override-factory-method/">
+<meta itemprop="wordCount" content="746" />
+<meta itemprop="timeRequired" content="4 Min" />
+
+            </footer>
+        </article>
+    </main>
+    <footer class="legal" role="contentinfo">
+    <p>Performed by <a href="//gohugo.io" title="Hugo :: A fast and modern static website engine">Hugo</a> with the <a href="//github.com/the2ne/hugo-frais" title="Theme by Olivier Fredon">Hugo Frais</a> theme.</p>
+</footer>
+
+    
+
+
+</body>
+</html>

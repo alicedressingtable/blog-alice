@@ -1,0 +1,196 @@
+<!doctype html>
+<html class="no-js" lang="en-EN" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="utf-8">
+    <title>Be careful with slice | blog</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Bad things happen when you don&#39;t take care of the capacity of the slice" />
+
+    
+<meta property="og:locale" content="en-EN">
+<meta property="og:title" content="Be careful with slice" />
+<meta property="og:description" content="Bad things happen when you don&#39;t take care of the capacity of the slice" />
+<meta property="og:site_name" content="blog" />
+<meta property="og:url" content="http://localhost:1313/2016/03/31/be-careful-with-slice/" />
+
+
+
+
+<meta property="og:type" content="article" />
+<meta property="article:section" content="post" />
+<meta property="article:published_time" content="2016-03-31" />
+<meta property="article:modified_time" content="2016-03-31" />
+
+    
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Be careful with slice" />
+<meta name="twitter:description" content="Bad things happen when you don&#39;t take care of the capacity of the slice" />
+<meta name="twitter:url" content="http://localhost:1313/2016/03/31/be-careful-with-slice/" />
+<meta name="twitter:image:src" content="http://localhost:1313/media/twitter-card.jpg">
+<meta name="twitter:domain" content="http://localhost:1313">
+<meta name="twitter:site" content="@https://twitter.com/alebaffa" />
+<meta name="twitter:creator" content="@https://twitter.com/alebaffa" />
+
+    <base href="http://localhost:1313">
+    <meta name="generator" content="Hugo 0.20-DEV" />
+    <link rel="canonical" href="http://localhost:1313/2016/03/31/be-careful-with-slice/">
+    
+    <link rel="stylesheet" href="/css/style.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/img/safari-pinned-tab.svg" color="#636363">
+<meta name="apple-mobile-web-app-title" content="blog">
+<meta name="application-name" content="blog">
+<meta name="theme-color" content="#333333">
+
+</head>
+
+
+<body class="template template--post">
+    <section class="header-wrapper">
+        <header class="headline" role="banner">
+    
+        <a class="headline__title" href="http://localhost:1313">alebaffa&#39;s blog</a>
+    
+</header>
+
+        <nav class="menu" role="navigation" id="main-menu">
+    <input type="checkbox" id="menu">
+    <label for="menu" onclick>Menu</label>
+    <ul class="menu__items">
+        
+        
+        <li><a href="/project/">Projects</a></li>
+        
+        <li><a href="/page/about/">About me</a></li>
+        
+        
+        
+        <li class="twitter">
+            <a href="https://twitter.com/https://twitter.com/alebaffa" title="Follow me">Twitter</a>
+        </li>
+        
+        
+        <li class="github">
+            <a href="https://github.com/https://github.com/alebaffa" title="Fork me">GitHub</a>
+        </li>
+        
+        
+        <li class="linkedin">
+            <a href="https://fr.linkedin.com/in/https://linkedin.com/in/alessandrobaffa/" title="About me">LinkedIn</a>
+        </li>
+        
+    </ul>
+</nav>
+
+    </section>
+    <main class="content" role="main" id="main-content" itemscope itemtype="http://schema.org/Article">
+        <article class="post">
+            <header>
+                <h1 class="post__title" itemprop="name">Be careful with slice</h1>
+            </header>
+            <section class="post__content" itemprop="articleBody">
+                <p><a href="https://blog.golang.org/slices">Slices</a> are a great tool in Go, but sometimes they can be confused with arrays.
+A small reminder: slices are a pointer into an underline array. Let&rsquo;s take this example:</p>
+
+<pre><code class="language-go">array := []int{1, 2, 3, 4, 5, 6}
+slice := array[1:3]
+
+// let's print both
+fmt.Println(&quot;array: &quot;, array)
+fmt.Println(&quot;slice: &quot;, slice)
+
+// array:  [1 2 3 4 5 6]
+// slice: [2 3]
+</code></pre>
+
+<p>Since the slice is only a pointer to the underline array, if you do some operations with the elements of the array you are also changing the elements of the slice. Like this example:</p>
+
+<pre><code class="language-go">// let's double the first element of the array
+array[1] *= 2
+
+// let's print the array and the slice
+fmt.Println(&quot;array: &quot;, array)
+fmt.Println(&quot;slice: &quot;, slice)
+
+// array:  [1 4 3 4 5 6]
+// slice: [4 3]
+</code></pre>
+
+<p>A slice have two important properties:</p>
+
+<pre><code class="language-go">fmt.Println(&quot;length of the slice: &quot;, len(slice))
+fmt.Println(&quot;capacity of the slice: &quot;, cap(slice))
+
+// length of the slice: :  2
+// capacity of the slice: 5
+</code></pre>
+
+<p>The length is the number of elements that the slice contains, while the capacity is the max number of elements it can contain.</p>
+
+<p>It&rsquo;s important to take care of what happens when the slice fulfills its capacity. Let&rsquo;s continue the example by adding new things in the slice (and so in the array):</p>
+
+<pre><code class="language-go">middle = append(slice, 100)
+middle = append(slice, 101)
+middle = append(slice, 102)
+middle = append(slice, 103)
+
+// slice:  [4 3 99 100 101 102 103]
+// array:  [1 4 3 99 100 101]
+// capacity of slice:  10
+</code></pre>
+
+<p>The array has reached its length (6 elements), but the slice has been extended. It is actually been copied and moved and it became a new slice with double capacity (10. It was 5 before).</p>
+
+<p>At this point the slice is not pointing anymore to that array. So, now if you do some operations to the underline array, the elements of the slice won&rsquo;t change anymore. Example:</p>
+
+<pre><code class="language-go">// let's double the first element of the array
+array[1] *= 2
+
+// let's print the array and the slice now:
+fmt.Println(&quot;array: &quot;, array)
+fmt.Println(&quot;slice: &quot;, slice)
+
+//array:  [1 8 3 99 100 101]
+//slice:  [4 3 99 100 101 102 103]
+</code></pre>
+
+<p>As you can see, the <em>array[1] = 8</em>, but the corresponding element in the slice is still 4.</p>
+
+<p>This is an important thing to take care of when you&rsquo;re using slices. It can be really confusing. Always take care of the capacity in case your program is managing a lot of elements.</p>
+
+            </section>
+            <footer class="post__meta">
+                <ul class="post__meta__infos">
+    
+    <li class="post__meta__date"><time datetime="2016-03-31" itemprop="datePublished">31 March 2016</time></li>
+</ul>
+
+<ul class="post__meta__taxonomies">
+    
+    
+    <li class="categories"><a href="http://localhost:1313categories/golang">golang </a></li>
+    
+</ul>
+<meta itemprop="url" content="http://localhost:1313/2016/03/31/be-careful-with-slice/">
+<meta itemprop="wordCount" content="418" />
+<meta itemprop="timeRequired" content="2 Min" />
+
+            </footer>
+        </article>
+    </main>
+    <footer class="legal" role="contentinfo">
+    <p>Performed by <a href="//gohugo.io" title="Hugo :: A fast and modern static website engine">Hugo</a> with the <a href="//github.com/the2ne/hugo-frais" title="Theme by Olivier Fredon">Hugo Frais</a> theme.</p>
+</footer>
+
+    
+
+
+</body>
+</html>
