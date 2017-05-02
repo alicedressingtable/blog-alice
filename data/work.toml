@@ -2,17 +2,29 @@
 title = "Work"
 
 [[projects]]
-    name = "Alice in Wonderland Nail Art"
+    name = "Futuristic Garden"
     folder = "proj-1"
 
 [[projects]]
-    name = "Milano Moda Make-up"
-    folder = "proj-2"
-
-[[projects]]
-    name = "Creativite Make-up"
+    name = "Marie Antoniette"
     folder = "proj-3"
 
 [[projects]]
-    name = "Flat Mobile UI/UX Concept"
+    name = "Private Room"
     folder = "proj-4"
+
+[[projects]]
+    name = "Radical Shades"
+    folder = "proj-5"
+
+[[projects]]
+    name = "Safari Glam"
+    folder = "proj-6"
+
+[[projects]]
+    name = "Swimsuit"
+    folder = "proj-7"
+
+[[projects]]
+    name = "Voyage"
+    folder = "proj-8"
