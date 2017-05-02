@@ -61,7 +61,6 @@ theme = "hugo-artists-theme"
 			icon = "instagram"
 			link = "//www.instagram.com/alicedressingtable/"
 
-
 	[params.form]
 		title = "Let's work together"
 		# Form fields
