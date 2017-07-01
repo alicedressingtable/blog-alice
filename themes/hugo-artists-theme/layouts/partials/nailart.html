@@ -1,17 +1,49 @@
 <section class="alt-nailart section-work">
-    {{ with .Site.Data.nailart.title }}<h3 id="work" class="bigger white">{{ . }}</h3>{{ end }}
+    {{ with .Site.Data.work.title2 }}<h3 id="work" class="bigger white">{{ . }}</h3>{{ end }}
 
-    {{ range .Site.Data.nailart.projects }}
+    {{ range .Site.Data.nailart.nails }}
     <input type="radio" name="trigger" class="trigger" id="{{ .folder }}" />
     {{ end }}
     <input type="radio" name="trigger" id="return" class="return" />
     <div class="work-belt">
         <div class="thumb-wrap">
             <div class="thumb-container">
-                {{ range .Site.Data.nailart.projects }}
+                {{ range .Site.Data.work.nails }}
                 <label for="{{ .folder }}">
                     <div class="thumb-unit" data-folder="{{ .folder }}">
                         <img src="img/work/{{.folder}}/thumb.jpg" alt="{{ .name }}" />
+                    </div>
+                    <div class="thumb-overlay">
+                        <strong>{{ .name }}</strong>
+                    </div>
+                </label>
+                <label for="{{ .folder }}">
+                    <div class="thumb-unit" data-folder="{{ .folder }}">
+                        <img src="img/work/{{.folder}}/thumb2.jpg" alt="{{ .name }}" />
+                    </div>
+                    <div class="thumb-overlay">
+                        <strong>{{ .name }}</strong>
+                    </div>
+                </label>
+                <label for="{{ .folder }}">
+                    <div class="thumb-unit" data-folder="{{ .folder }}">
+                        <img src="img/work/{{.folder}}/thumb3.jpg" alt="{{ .name }}" />
+                    </div>
+                    <div class="thumb-overlay">
+                        <strong>{{ .name }}</strong>
+                    </div>
+                </label>
+                <label for="{{ .folder }}">
+                    <div class="thumb-unit" data-folder="{{ .folder }}">
+                        <img src="img/work/{{.folder}}/thumb4.jpg" alt="{{ .name }}" />
+                    </div>
+                    <div class="thumb-overlay">
+                        <strong>{{ .name }}</strong>
+                    </div>
+                </label>
+                <label for="{{ .folder }}">
+                    <div class="thumb-unit" data-folder="{{ .folder }}">
+                        <img src="img/work/{{.folder}}/thumb5.jpg" alt="{{ .name }}" />
                     </div>
                     <div class="thumb-overlay">
                         <strong>{{ .name }}</strong>
@@ -28,7 +60,7 @@
                 <h4 class="project-title"></h4>
                 <div class="project-load"></div>
                 <noscript>
-                    {{ range .Site.Data.nailart.projects }}
+                    {{ range .Site.Data.work.nails }}
                     <div class="noscript" id="content-{{ .folder }}">
                         <h4 class="project-title">{{ .name }}</h4>
                     </div>

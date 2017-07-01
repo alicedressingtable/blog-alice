@@ -1,5 +1,6 @@
 # Section title
 title = "Make Up"
+title2 = "Nail Art"
 
 [[projects]]
     name = "Futuristic Garden"
@@ -20,3 +21,7 @@ title = "Make Up"
 [[projects]]
     name = "Swimsuit"
     folder = "proj-7"
+
+[[nails]]
+    name = "More details"
+    folder = "projnail-1"
