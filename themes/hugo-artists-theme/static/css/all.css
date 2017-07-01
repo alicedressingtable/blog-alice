@@ -495,6 +495,10 @@
     color: #333;
     font-weight: bold; }
 
+  .white {
+    color:white;
+  }
+
   .gigantic {
     font-size: 110px;
     line-height: 1.09;
@@ -594,6 +598,9 @@
       padding: 50px 0 50px; } }
   .alt-section {
     background: #e5eaee;
+    padding-bottom: 100px; }
+  .alt-nailart {
+    background: #e3c6b1;
     padding-bottom: 100px; }
   .alt-section a {
     color: #d7ae5c;
@@ -899,7 +906,7 @@
       position: relative;
       display: block;
       float: left;
-      width: 25%;
+      width: 20%;
       cursor: pointer; }
       .thumb-container label .thumb-unit {
         display: block;
