@@ -11,7 +11,7 @@ theme = "hugo-artists-theme"
 
 	# To provide some metadata for search engines feel free to add a few
     # information about you and your website.
-	name = "Alice Cosentino Image Stylist"
+	name = "Alice Cosentino\r\nImage Stylist"
 	description = "Nail Art. Make-up artist. Nail technician."
 
 	# Since this template is static, the contact form uses www.formspree.io as a
@@ -35,6 +35,7 @@ theme = "hugo-artists-theme"
 	# But keep the original filename!
 	[params.header]
 		title = "Alice Cosentino Image Stylist"
+
 		shortBio = "Make-up Artist // Nail Technician // Fashion Designer"
 
 
