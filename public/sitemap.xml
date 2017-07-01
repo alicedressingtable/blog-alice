@@ -2,18 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://alicedressingtable.github.io/nailart/projnail-1/</loc>
-  </url>
-  
-  <url>
-    <loc>https://alicedressingtable.github.io/nailart/projnail-2/</loc>
-  </url>
-  
-  <url>
-    <loc>https://alicedressingtable.github.io/nailart/projnail-3/</loc>
-  </url>
-  
-  <url>
     <loc>https://alicedressingtable.github.io/work/proj-1/</loc>
   </url>
   
@@ -46,17 +34,24 @@
   </url>
   
   <url>
+    <loc>https://alicedressingtable.github.io/work/projnail-1/</loc>
+  </url>
+  
+  <url>
+    <loc>https://alicedressingtable.github.io/work/projnail-2/</loc>
+  </url>
+  
+  <url>
+    <loc>https://alicedressingtable.github.io/work/projnail-3/</loc>
+  </url>
+  
+  <url>
     <loc>https://alicedressingtable.github.io/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://alicedressingtable.github.io/</loc>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://alicedressingtable.github.io/nailart/</loc>
     <priority>0</priority>
   </url>
   
