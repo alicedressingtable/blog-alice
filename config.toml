@@ -1,7 +1,7 @@
 # Site settings
 baseurl = "https://alicedressingtable.github.io/"
 languageCode = "en-us"
-title = "Hugo Artists Theme"
+title = "Alice Cosentino Image Stylist"
 theme = "hugo-artists-theme"
 
 [params]

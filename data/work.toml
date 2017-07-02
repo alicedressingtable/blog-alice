@@ -23,11 +23,3 @@ title4 = "Corsi"
 [[projects]]
     name = "Swimsuit"
     folder = "proj-7"
-
-[[nails]]
-    name = "More details"
-    folder = "projnail-1"
-
-[[corsi]]
-    name = "More details"
-    folder = "corsi-1"

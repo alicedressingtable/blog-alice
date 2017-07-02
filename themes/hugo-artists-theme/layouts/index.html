@@ -4,6 +4,11 @@
 		{{ partial "head.html" . }}
 	</head>
 	<body>
+		<script type="text/javascript"> 
+			jQuery(document).ready(function(){ 
+				jQuery("#gallery").unitegallery(); 
+			}); 
+		</script>
 
 		{{ partial "header.html"  . }} 
 		{{ partial "about.html"   . }}
