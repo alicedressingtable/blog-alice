@@ -22,3 +22,11 @@ git push origin master
 
 # Come Back
 cd ..
+
+cd ../alicedressingtable.github.io
+rm -rf *
+cp ../blog-alice/CNAME .
+cp ../blog-alice/public/* .
+git add -A
+git commit -m "rebuild public"
+git push origin master
