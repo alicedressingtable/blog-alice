@@ -1,4 +1,0 @@
-[submodule "public"]
-	path = public
-	url = git@github.com:alicedressingtable/alicedressingtable.github.io
-	branch = master

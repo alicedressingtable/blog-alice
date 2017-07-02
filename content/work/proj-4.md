@@ -1,1 +1,0 @@
-![Crispy Icons](img/work/proj-4/thumb.jpg)

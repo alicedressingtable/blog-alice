@@ -1,5 +1,0 @@
-![Crispy Icons](img/work/proj-7/thumb.jpg)
-![Crispy Icons](img/work/proj-7/img1.jpg)
-![Crispy Icons](img/work/proj-7/img2.jpg)
-![Crispy Icons](img/work/proj-7/img3.jpg)
-![Crispy Icons](img/work/proj-7/img4.jpg)
