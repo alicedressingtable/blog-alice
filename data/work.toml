@@ -2,6 +2,7 @@
 title = "Make Up"
 title2 = "Nail Art"
 title3 = "Participations"
+title4 = "Corsi"
 
 [[projects]]
     name = "Futuristic Garden"
@@ -26,3 +27,7 @@ title3 = "Participations"
 [[nails]]
     name = "More details"
     folder = "projnail-1"
+
+[[corsi]]
+    name = "More details"
+    folder = "corsi-1"
