@@ -1,0 +1,33 @@
+# Section title
+title = "Make Up"
+title2 = "Nail Art"
+title3 = "Participations"
+title4 = "Corsi"
+
+[[projects]]
+    name = "Futuristic Garden"
+    folder = "proj-1"
+
+[[projects]]
+    name = "Marie Antoniette"
+    folder = "proj-3"
+
+[[projects]]
+    name = "Private Room"
+    folder = "proj-4"
+
+[[projects]]
+    name = "Radical Shades"
+    folder = "proj-5"
+
+[[projects]]
+    name = "Swimsuit"
+    folder = "proj-7"
+
+[[nails]]
+    name = "More details"
+    folder = "projnail-1"
+
+[[corsi]]
+    name = "More details"
+    folder = "corsi-1"
